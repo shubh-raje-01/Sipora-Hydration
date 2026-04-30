@@ -19,9 +19,7 @@ public final class IdentityDTOs {
 
     private IdentityDTOs() {}
 
-    // ══════════════════════════════════════════════════════════════════
-    // Auth requests
-    // ══════════════════════════════════════════════════════════════════
+    // Auth requests =>
 
     public record RegisterRequest(
             @NotBlank(message = "Full name is required")
@@ -72,9 +70,7 @@ public final class IdentityDTOs {
             String newPassword
     ) {}
 
-    // ══════════════════════════════════════════════════════════════════
-    // Auth responses
-    // ══════════════════════════════════════════════════════════════════
+    // Auth responses ==>
 
     public record AuthResponse(
             String       accessToken,
@@ -88,9 +84,7 @@ public final class IdentityDTOs {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════
-    // User requests
-    // ══════════════════════════════════════════════════════════════════
+    // User requests ==>
 
     public record UpdateProfileRequest(
             @Size(min = 2, max = 150, message = "Full name must be between 2 and 150 characters")
@@ -124,9 +118,7 @@ public final class IdentityDTOs {
             String label
     ) {}
 
-    // ══════════════════════════════════════════════════════════════════
-    // User responses
-    // ══════════════════════════════════════════════════════════════════
+    // User responses ==>
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public record UserResponse(

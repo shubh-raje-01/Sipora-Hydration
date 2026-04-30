@@ -58,9 +58,7 @@ public class AuthService {
 
     private static final String REFRESH_KEY_PREFIX = "refresh:";
 
-    // ──────────────────────────────────────────────────────────────────
-    // Register
-    // ──────────────────────────────────────────────────────────────────
+    // Register ==>
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -81,9 +79,7 @@ public class AuthService {
         return issueTokenPair(user);
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // Login
-    // ──────────────────────────────────────────────────────────────────
+    // Login ==>
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
@@ -105,9 +101,7 @@ public class AuthService {
         return issueTokenPair(user);
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // Refresh
-    // ──────────────────────────────────────────────────────────────────
+    // Refresh ==>
 
     @Transactional(readOnly = true)
     public AuthResponse refresh(RefreshTokenRequest request) {
@@ -130,9 +124,7 @@ public class AuthService {
         return issueTokenPair(user);
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // Logout
-    // ──────────────────────────────────────────────────────────────────
+    // Logout ==>
 
     public void logout(String refreshToken) {
         redisTemplate.delete(REFRESH_KEY_PREFIX + refreshToken);
@@ -140,9 +132,7 @@ public class AuthService {
         // For immediate revocation, maintain an access token blocklist in Redis.
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────────────────────────────────
+    // Helpers ==>
 
     private AuthResponse issueTokenPair(User user) {
         String accessToken  = jwtTokenProvider.generateAccessToken(

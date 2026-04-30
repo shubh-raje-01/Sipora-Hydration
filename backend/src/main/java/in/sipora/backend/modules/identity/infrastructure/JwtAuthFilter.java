@@ -60,9 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────────────────────────────────
+    // Helpers ==>
 
     private void tryAuthenticate(String token, HttpServletRequest request) {
         try {

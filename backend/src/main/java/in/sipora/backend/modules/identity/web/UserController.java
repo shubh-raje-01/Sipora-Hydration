@@ -40,7 +40,7 @@ public class UserController {
 
     private final UserService userService;
 
-    // ── Profile ──────────────────────────────────────────────────────
+    // ── Profile
 
     @GetMapping("/me")
     @Operation(summary = "Get the authenticated user's profile")
@@ -69,7 +69,7 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Password changed successfully"));
     }
 
-    // ── Addresses ────────────────────────────────────────────────────
+    // ── Addresses
 
     @GetMapping("/me/addresses")
     @Operation(summary = "List all saved addresses")

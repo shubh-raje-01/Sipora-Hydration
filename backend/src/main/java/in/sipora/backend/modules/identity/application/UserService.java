@@ -29,9 +29,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-    // ──────────────────────────────────────────────────────────────────
-    // Profile
-    // ──────────────────────────────────────────────────────────────────
+    // Profile ==>
 
     @Transactional(readOnly = true)
     public UserResponse getProfile(UUID userId) {
@@ -52,9 +50,7 @@ public class UserService {
         return userMapper.toResponse(userRepository.save(user));
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // Password
-    // ──────────────────────────────────────────────────────────────────
+    // Password ==>
 
     @Transactional
     public void changePassword(UUID userId, ChangePasswordRequest request) {
@@ -70,9 +66,7 @@ public class UserService {
         userRepository.updatePassword(userId, passwordEncoder.encode(request.newPassword()));
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // Addresses
-    // ──────────────────────────────────────────────────────────────────
+    // Addresses ==>
 
     @Transactional(readOnly = true)
     public List<AddressResponse> getAddresses(UUID userId) {
@@ -135,9 +129,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // Helpers
-    // ──────────────────────────────────────────────────────────────────
+    // Helpers ==>
 
     private User findOrThrow(UUID userId) {
         return userRepository.findById(userId)

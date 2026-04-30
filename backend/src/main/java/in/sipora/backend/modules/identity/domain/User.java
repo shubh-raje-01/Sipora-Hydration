@@ -77,9 +77,7 @@ public class User extends BaseEntity implements UserDetails {
     )
     private List<Address> addresses = new ArrayList<>();
 
-    // ──────────────────────────────────────────────────────────────────
-    // UserDetails — Spring Security contract
-    // ──────────────────────────────────────────────────────────────────
+    // UserDetails — Spring Security contract ==>
 
     /**
      * Returns the UUID string as the username.
