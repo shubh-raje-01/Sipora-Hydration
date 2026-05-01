@@ -156,70 +156,70 @@ public final class CatalogDTOs {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public record CategoryResponse(
-            UUID   id,
+            UUID id,
             String name,
             String slug,
             String description,
             String imageUrl,
-            int    displayOrder,
+            int displayOrder,
             boolean active,
-            UUID   parentId,
+            UUID parentId,
             List<CategoryResponse> children
     ) {}
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public record ProductResponse(
-            UUID              id,
-            String            name,
-            String            slug,
-            String            description,
-            String            shortDescription,
-            String            metaTitle,
-            String            metaDescription,
-            String            status,
-            boolean           featured,
-            int               displayOrder,
-            BigDecimal        startingPrice,
-            String            currencyCode,
-            boolean           inStock,
-            int               totalStock,
-            List<String>      images,
-            CategoryResponse  category,
+            UUID id,
+            String name,
+            String slug,
+            String description,
+            String shortDescription,
+            String metaTitle,
+            String metaDescription,
+            String status,
+            boolean featured,
+            int displayOrder,
+            BigDecimal startingPrice,
+            String currencyCode,
+            boolean inStock,
+            int totalStock,
+            List<String> images,
+            CategoryResponse category,
             List<VariantResponse> variants,
-            Instant           createdAt,
-            Instant           updatedAt
+            Instant createdAt,
+            Instant updatedAt
     ) {}
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public record VariantResponse(
-            UUID       id,
-            String     sku,
-            String     displayName,
+            UUID id,
+            String sku,
+            String displayName,
             BigDecimal price,
-            String     currencyCode,
-            int        stockQty,
-            int        lowStockThreshold,
-            boolean    inStock,
-            boolean    lowStock,
-            String     color,
-            String     size,
-            String     flavor,
-            Integer    quantityCount,
-            boolean    active,
-            int        displayOrder
+            String currencyCode,
+            int stockQty,
+            int lowStockThreshold,
+            boolean inStock,
+            boolean  lowStock,
+            String color,
+            String size,
+            String flavor,
+            Integer quantityCount,
+            boolean active,
+            int displayOrder
     ) {}
 
     /** Minimal card used in listing pages — no full description or variants. */
     public record ProductCardResponse(
-            UUID       id,
-            String     name,
-            String     slug,
-            String     shortDescription,
+            UUID id,
+            String name,
+            String slug,
+            String shortDescription,
             BigDecimal startingPrice,
-            String     currencyCode,
-            boolean    inStock,
-            String     primaryImageUrl,
-            boolean    featured,
-            String     categoryName
+            String currencyCode,
+            boolean inStock,
+            String primaryImageUrl,
+            boolean featured,
+            String categoryName
     ) {}
 }

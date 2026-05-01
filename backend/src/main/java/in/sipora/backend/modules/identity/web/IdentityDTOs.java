@@ -73,10 +73,10 @@ public final class IdentityDTOs {
     // Auth responses ==>
 
     public record AuthResponse(
-            String       accessToken,
-            String       refreshToken,
-            String       tokenType,
-            long         expiresIn,     // seconds
+            String accessToken,
+            String refreshToken,
+            String tokenType,
+            long expiresIn,     // seconds
             UserResponse user
     ) {
         public static AuthResponse of(String access, String refresh, long expiryMs, UserResponse user) {
@@ -122,18 +122,18 @@ public final class IdentityDTOs {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public record UserResponse(
-            UUID        id,
-            String      fullName,
-            String      email,
-            String      phone,
-            String      role,
-            boolean     enabled,
-            Instant     createdAt,
+            UUID id,
+            String fullName,
+            String email,
+            String phone,
+            String role,
+            boolean enabled,
+            Instant createdAt,
             List<AddressResponse> addresses
     ) {}
 
     public record AddressResponse(
-            int    index,
+            int index,
             String line1,
             String line2,
             String city,
