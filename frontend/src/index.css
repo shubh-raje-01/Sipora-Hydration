@@ -50,9 +50,9 @@
 
   .liquid-ether {
     background:
-      conic-gradient(from 180deg at 46% 54%, rgba(144, 214, 249, 0.78), rgba(255, 188, 217, 0.72), rgba(163, 228, 250, 0.7), rgba(243, 246, 246, 0.9), rgba(144, 214, 249, 0.78)),
-      linear-gradient(120deg, rgba(243, 246, 246, 0.96), rgba(163, 228, 250, 0.5), rgba(255, 168, 197, 0.46));
-    filter: saturate(1.18);
+      conic-gradient(from 180deg at 46% 54%, rgba(144, 214, 249, 0.9), rgba(255, 188, 217, 0.86), rgba(243, 246, 246, 0.62), rgba(144, 214, 249, 0.76), rgba(255, 188, 217, 0.9)),
+      linear-gradient(120deg, rgba(243, 246, 246, 0.82), rgba(144, 214, 249, 0.72), rgba(255, 188, 217, 0.68));
+    filter: saturate(1.14);
   }
 
   .liquid-ether::before,
@@ -67,6 +67,18 @@
     animation: ether-drift 18s ease-in-out infinite alternate;
   }
 
+  .app-liquid-ether {
+    opacity: 0.62;
+  }
+
+  .app-liquid-ether::before {
+    opacity: 0.68;
+  }
+
+  .app-liquid-ether::after {
+    opacity: 0.48;
+  }
+
   .liquid-ether::after {
     animation-duration: 24s;
     animation-direction: alternate-reverse;
@@ -77,6 +89,13 @@
 
   .card-shine {
     background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.78), transparent 28rem);
+  }
+
+  .hero-wave {
+    background:
+      linear-gradient(100deg, transparent 0 18%, rgba(255, 255, 255, 0.32) 18% 20%, transparent 20% 42%, rgba(144, 214, 249, 0.34) 42% 44%, transparent 44%),
+      repeating-linear-gradient(150deg, rgba(15, 40, 47, 0.08) 0 1px, transparent 1px 24px);
+    mask-image: linear-gradient(90deg, transparent, black 18%, black 82%, transparent);
   }
 }
 
@@ -95,6 +114,15 @@
   }
   to {
     transform: translate3d(4%, 3%, 0) rotate(18deg) scale(1.08);
+  }
+}
+
+@keyframes wave-slide {
+  from {
+    transform: translateX(-8%) skewY(-2deg);
+  }
+  to {
+    transform: translateX(8%) skewY(2deg);
   }
 }
 

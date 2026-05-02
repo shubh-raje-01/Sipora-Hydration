@@ -46,9 +46,10 @@ export default function App() {
     <CartProvider>
       <Router>
         <ScrollToTop />
-        <div className="min-h-screen flex flex-col">
+        <div className="relative min-h-screen flex flex-col overflow-hidden">
+          <div className="liquid-ether app-liquid-ether fixed inset-0 -z-10" aria-hidden="true" />
           <Navbar />
-          <main className="flex-grow">
+          <main className="relative z-0 flex-grow">
             <AnimatedRoutes />
           </main>
           <Footer />

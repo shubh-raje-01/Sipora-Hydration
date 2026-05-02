@@ -80,6 +80,7 @@ public class OrderMapper {
                 order.getSubtotal(),
                 order.getShippingCharge(),
                 order.getCurrencyCode(),
+                order.getGatewayOrderId(),
                 productIds,
                 variantIds,
                 order.getCreatedAt()
