@@ -1,10 +1,121 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
-import { Plus, ShoppingBag, Loader2 } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { Plus, Loader2 } from 'lucide-react';
 import { VESSELS as LOCAL_VESSELS, PODS as LOCAL_PODS } from '../constants';
 import { useCart } from '../context/CartContext';
 import { fetchAllProducts } from '../services/shopifyService';
 import { Product } from '../types';
+import { cn } from '../lib/utils';
+
+function ShopScrollytelling({ vessel, pod }: { vessel: Product; pod: Product }) {
+  const ref = React.useRef<HTMLElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const bottleY = useTransform(scrollYProgress, [0, 0.5, 1], [90, -20, -110]);
+  const bottleRotate = useTransform(scrollYProgress, [0, 0.45, 1], [-10, 8, -6]);
+  const bottleScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.86, 1.05, 0.94]);
+  const podX = useTransform(scrollYProgress, [0.1, 0.55, 0.9], [180, 8, -120]);
+  const podRotate = useTransform(scrollYProgress, [0, 1], [18, -28]);
+  const copyY = useTransform(scrollYProgress, [0, 0.45, 1], [40, -12, -40]);
+  const mistOpacity = useTransform(scrollYProgress, [0.15, 0.55, 0.9], [0.1, 0.72, 0.18]);
+
+  return (
+    <section ref={ref} className="relative mb-32 min-h-[125vh] overflow-hidden rounded-lg bg-primary text-white">
+      <div className="liquid-ether absolute inset-0 opacity-20" />
+      <div className="sticky top-20 grid min-h-[calc(100vh-5rem)] items-center gap-10 px-6 py-16 md:px-12 lg:grid-cols-[0.86fr_1.14fr]">
+        <motion.div style={{ y: copyY }} className="relative z-10 max-w-xl">
+          <p className="mb-5 text-sm font-black uppercase tracking-[0.26em] text-secondary">Scroll to pair</p>
+          <h2 className="text-5xl font-black leading-none tracking-tight md:text-7xl">Bottle first. Pod next. Habit follows.</h2>
+          <p className="mt-8 text-lg font-semibold leading-8 text-white/72">
+            The shopping flow should feel like assembly: choose the vessel, bring the pod into the sip path, then make the add-to-cart action obvious.
+          </p>
+        </motion.div>
+
+        <div className="relative min-h-[36rem]">
+          <motion.div
+            style={{ opacity: mistOpacity }}
+            className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-secondary blur-3xl"
+          />
+          <motion.div
+            style={{ y: bottleY, rotate: bottleRotate, scale: bottleScale }}
+            className="absolute left-[46%] top-1/2 h-[31rem] w-[16rem] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[4rem] border border-white/50 bg-white/10 p-5 shadow-2xl shadow-black/30"
+          >
+            <img src={vessel.image} alt={vessel.name} className="h-full w-full rounded-[3rem] object-cover" referrerPolicy="no-referrer" />
+          </motion.div>
+          <motion.div
+            style={{ x: podX, rotate: podRotate }}
+            className="absolute left-[57%] top-[44%] h-36 w-36 -translate-y-1/2 overflow-hidden rounded-full border-8 border-white/50 bg-secondary shadow-2xl"
+          >
+            <img src={pod.image} alt={pod.name} className="h-full w-full scale-125 object-cover mix-blend-multiply" referrerPolicy="no-referrer" />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductCard({ product, onAdd }: { product: Product; onAdd: (product: Product) => void }) {
+  const isBottle = product.category === 'vessel';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      whileHover={{ y: -14, rotateX: isBottle ? 4 : 2, rotateY: isBottle ? -4 : 5 }}
+      transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+      className={cn(
+        'group relative overflow-hidden rounded-lg border border-white/70 bg-white p-5 shadow-sm transition-shadow duration-500 hover:shadow-2xl hover:shadow-primary/15 [transform-style:preserve-3d]',
+        isBottle ? 'md:p-6' : 'p-5'
+      )}
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 card-shine" />
+      <div className={cn('relative overflow-hidden rounded-lg', isBottle ? 'aspect-[4/5] bg-secondary-container' : 'aspect-square bg-tertiary-container')}>
+        <motion.div
+          className={cn('absolute inset-x-8 bottom-6 z-10 h-20 rounded-full blur-2xl', isBottle ? 'bg-secondary/60' : 'bg-tertiary/60')}
+          animate={{ scale: [0.9, 1.08, 0.9], opacity: [0.32, 0.72, 0.32] }}
+          transition={{ duration: isBottle ? 3.8 : 2.7, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <img
+          src={product.image}
+          alt={product.name}
+          className={cn(
+            'relative z-10 h-full w-full object-cover transition duration-700',
+            isBottle ? 'group-hover:scale-110 group-hover:-rotate-3' : 'scale-90 rounded-full mix-blend-multiply group-hover:scale-105 group-hover:rotate-12'
+          )}
+          referrerPolicy="no-referrer"
+        />
+        <span className="absolute left-4 top-4 z-20 rounded-full bg-primary/90 px-3 py-1 text-[0.63rem] font-black uppercase tracking-[0.18em] text-white">
+          {isBottle ? 'Bottle' : 'Pod'}
+        </span>
+      </div>
+
+      <div className="pt-6">
+        <div className="mb-2 flex items-start justify-between gap-4">
+          <h3 className={cn('font-black tracking-tight', isBottle ? 'text-2xl' : 'text-xl')}>{product.name}</h3>
+          <span className="rounded-full bg-primary px-3 py-2 text-sm font-black text-white">${product.price}</span>
+        </div>
+        <p className="mb-6 text-sm font-semibold leading-6 text-on-surface-variant">{product.description}</p>
+        {product.colors && (
+          <div className="mb-6 flex gap-3">
+            {product.colors.map((color) => (
+              <span key={color} className="h-6 w-6 rounded-full border border-on-surface/10 ring-offset-2 transition group-hover:ring-2 group-hover:ring-secondary" style={{ backgroundColor: color }} />
+            ))}
+          </div>
+        )}
+        <button
+          onClick={() => onAdd(product)}
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-4 text-sm font-black text-white shadow-lg shadow-primary/10 transition active:scale-95 group-hover:bg-primary-dim"
+        >
+          {isBottle ? 'Add Vessel' : 'Add Pod'}
+          <Plus className="h-4 w-4" />
+        </button>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function ShopPage() {
   const { addToCart } = useCart();
@@ -51,6 +162,8 @@ export default function ShopPage() {
         </div>
       </header>
 
+      <ShopScrollytelling vessel={vessels[0] ?? LOCAL_VESSELS[0]} pod={pods[0] ?? LOCAL_PODS[0]} />
+
       {/* Vessel Selection */}
       <section className="mb-32">
         <div className="flex justify-between items-end mb-12">
@@ -62,42 +175,7 @@ export default function ShopPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {vessels.map((vessel) => (
-            <motion.div 
-              key={vessel.id}
-              whileHover={{ y: -10 }}
-              className="group relative bg-surface-container-lowest rounded-[2.5rem] overflow-hidden transition-all duration-500 shadow-sm hover:shadow-xl"
-            >
-              <div className="aspect-[4/5] overflow-hidden bg-surface-container-low">
-                <img 
-                  src={vessel.image} 
-                  alt={vessel.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <div className="p-10">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-2xl font-bold">{vessel.name}</h3>
-                  <span className="text-xl font-black text-primary">${vessel.price}</span>
-                </div>
-                <p className="text-on-surface-variant mb-6 font-medium leading-relaxed">{vessel.description}</p>
-                <div className="flex gap-3 mb-8">
-                  {vessel.colors?.map((color, i) => (
-                    <div 
-                      key={i} 
-                      className="w-6 h-6 rounded-full border border-on-surface/10 ring-offset-2 transition-all cursor-pointer hover:ring-2 hover:ring-primary"
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-                <button 
-                  onClick={() => addToCart(vessel)}
-                  className="w-full py-5 bg-primary text-on-primary rounded-2xl font-bold text-lg hover:bg-primary-dim transition-all active:scale-95 shadow-lg shadow-primary/10"
-                >
-                  Add Vessel
-                </button>
-              </div>
-            </motion.div>
+            <ProductCard key={vessel.id} product={vessel} onAdd={addToCart} />
           ))}
         </div>
       </section>
@@ -111,31 +189,7 @@ export default function ShopPage() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {pods.map((pod) => (
-            <motion.div 
-              key={pod.id}
-              whileHover={{ y: -10 }}
-              className="bg-surface-container-low rounded-[2rem] p-8 border border-transparent hover:border-primary/10 transition-all group shadow-sm"
-            >
-              <div className="w-full aspect-square rounded-full bg-white flex items-center justify-center mb-8 overflow-hidden shadow-inner">
-                <img 
-                  src={pod.image} 
-                  alt={pod.name}
-                  className="w-full h-full object-cover mix-blend-multiply transition-transform group-hover:rotate-12 scale-90"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <h4 className="text-xl font-bold mb-1">{pod.name}</h4>
-              <p className="text-sm text-on-surface-variant mb-6 font-medium">{pod.description}</p>
-              <div className="flex justify-between items-center">
-                <span className="font-black text-primary text-lg">${pod.price} <span className="text-xs text-on-surface-variant font-normal">/ 6pk</span></span>
-                <button 
-                  onClick={() => addToCart(pod)}
-                  className="p-3 bg-white rounded-full text-primary hover:bg-primary hover:text-white transition-all shadow-sm active:scale-90"
-                >
-                  <Plus className="w-5 h-5" />
-                </button>
-              </div>
-            </motion.div>
+            <ProductCard key={pod.id} product={pod} onAdd={addToCart} />
           ))}
         </div>
       </section>

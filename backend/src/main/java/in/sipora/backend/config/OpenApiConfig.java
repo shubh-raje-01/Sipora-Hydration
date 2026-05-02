@@ -19,8 +19,8 @@ import java.util.List;
  * App-level OpenAPI / Swagger configuration.
  *
  * Accessible at:
- *   /swagger-ui.html          — interactive UI
- *   /v3/api-docs              — raw JSON spec
+ *   /swagger-ui.html — interactive UI
+ *   /v3/api-docs — raw JSON spec
  *
  * The JWT bearer scheme is registered globally so the "Authorize" button
  * in Swagger UI applies the token to every endpoint automatically.
