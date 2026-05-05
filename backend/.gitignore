@@ -34,3 +34,15 @@ build/
 
 ### Application file ###
 src.main.resources.application.yaml
+src.main.resources.application-dev.yaml
+src.main.resources.application-prod.yaml
+
+.DS_Store
+Thumbs.db
+
+*.log
+logs/
+
+docker-compose.override.yml
+
+spring-shell.log

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>We've received your order</title>
+</head>
+<!--
+  Template variables expected:
+    fullName, email, orderNumber, totalAmount, currencyCode,
+    orderUrl, placedAt, brandName, brandUrl, supportEmail, year
+-->
+<body>
+<th:block th:replace="~{email/base-layout :: layout(~{::content})}">
+  <th:block th:fragment="content">
+
+    <!-- Status badge -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="margin-bottom:20px;">
+      <tr>
+        <td>
+          <span style="display:inline-block; background:#FFF3CD; color:#856404;
+                       font-size:12px; font-weight:600; padding:4px 12px;
+                       border-radius:20px; letter-spacing:0.4px;">
+            ⏳ AWAITING PAYMENT
+          </span>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Heading -->
+    <h1 style="font-size:22px; font-weight:600; color:#212529; margin:0 0 8px;">
+      Order Received, <span th:text="${fullName}">Friend</span>!
+    </h1>
+    <p style="font-size:15px; color:#495057; margin:0 0 24px; line-height:1.6;">
+      We've received your order and are holding it for you.
+      Complete your payment to confirm it.
+    </p>
+
+    <!-- Order summary card -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="background:#F8F9FA; border-radius:8px; border:1px solid #E9ECEF;
+                  margin-bottom:24px;">
+      <tr>
+        <td style="padding:20px;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="font-size:13px; color:#6C757D; padding-bottom:10px;">Order number</td>
+              <td style="font-size:13px; font-weight:600; color:#212529;
+                         text-align:right; padding-bottom:10px;"
+                  th:text="${orderNumber}">SIP-20250423-0001</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="border-top:1px solid #DEE2E6; padding:0;"></td>
+            </tr>
+            <tr>
+              <td style="font-size:13px; color:#6C757D; padding-top:10px;">Order total</td>
+              <td style="font-size:15px; font-weight:700; color:#0D6EFD;
+                         text-align:right; padding-top:10px;">
+                <span th:text="${currencyCode}">INR</span>
+                <span th:text="${totalAmount}">499.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:12px; color:#ADB5BD; padding-top:6px;"
+                  th:text="${'Placed at: ' + placedAt}"></td>
+              <td></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Info note -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="background:#E7F1FF; border-radius:8px; padding:16px;
+                  margin-bottom:24px;">
+      <tr>
+        <td>
+          <p style="font-size:13px; color:#1D4ED8; margin:0; line-height:1.6;">
+            ℹ️ Your order is reserved but not yet confirmed.
+            Once your payment is successful, you'll receive a confirmation email.
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- View order CTA -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="margin-bottom:20px;">
+      <tr>
+        <td>
+          <a th:href="${orderUrl}"
+             style="display:inline-block; background:#0D6EFD; color:#ffffff;
+                    text-decoration:none; font-size:14px; font-weight:600;
+                    padding:12px 28px; border-radius:8px;">
+            View My Order →
+          </a>
+        </td>
+      </tr>
+    </table>
+
+    <p style="font-size:13px; color:#6C757D; margin:0; line-height:1.6;">
+      Questions about your order? Reply to this email or contact us at
+      <a th:href="'mailto:' + ${supportEmail}"
+         th:text="${supportEmail}"
+         style="color:#0D6EFD; text-decoration:none;"></a>.
+    </p>
+
+  </th:block>
+</th:block>
+</body>
+</html>

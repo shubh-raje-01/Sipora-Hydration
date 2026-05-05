@@ -1,13 +1,60 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F282F" />
 
+  <!-- Primary SEO -->
+  <title>Sipora — Hydration, Elevated</title>
+  <meta
+          name="description"
+          content="Experience flavour without sugar. Sipora uses the science of scent to make plain water taste extraordinary. Zero sugar. Zero calories. Pure hydration."
+  />
+  <meta name="keywords" content="sipora, hydration, flavored water, no sugar, scent pods, healthy water, India" />
+  <link rel="canonical" href="https://sipora.in" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sipora.in" />
+  <meta property="og:title" content="Sipora — Hydration, Elevated" />
+  <meta property="og:description" content="Experience flavour without sugar. The science of scent, in every sip." />
+  <meta property="og:image" content="https://sipora.in/og-image.jpg" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Sipora — Hydration, Elevated" />
+  <meta name="twitter:description" content="Flavour through scent. Zero sugar. Zero calories." />
+  <meta name="twitter:image" content="https://sipora.in/og-image.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!--
+    Typography: Fraunces (optical-size serif display) + DM Sans (body)
+
+    Fraunces: warm, approachable, handcrafted feel — perfect for a wellness
+      brand that wants to feel distinctive, not clinical.
+    DM Sans: geometric humanist sans-serif — clean and readable without
+      competing with Fraunces in headings.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+          rel="stylesheet"
+  />
+
+  <!--
+    Razorpay Checkout SDK — loaded early so it is available
+    when the checkout page mounts and calls useRazorpay().
+  -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+</head>
+
+<body class="bg-ice antialiased">
+<div id="root" class="min-h-screen flex flex-col"></div>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

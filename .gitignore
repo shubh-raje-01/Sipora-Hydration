@@ -43,3 +43,5 @@ build/
 
 ### Application file ###
 backend/src/main/resources/application.yaml
+backend/src/main/resources/application-dev.yaml
+backend/src/main/resources/application-prod.yaml

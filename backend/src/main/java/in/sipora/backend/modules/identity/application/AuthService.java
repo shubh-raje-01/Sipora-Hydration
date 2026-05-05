@@ -1,6 +1,7 @@
 package in.sipora.backend.modules.identity.application;
 
 import in.sipora.backend.modules.identity.domain.User;
+import in.sipora.backend.modules.identity.domain.UserRegisteredEvent;
 import in.sipora.backend.modules.identity.domain.UserRepository;
 import in.sipora.backend.modules.identity.infrastructure.JwtTokenProvider;
 import in.sipora.backend.modules.identity.web.IdentityDTOs.AuthResponse;
@@ -13,6 +14,7 @@ import in.sipora.backend.shared.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,12 +45,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository        userRepository;
-    private final PasswordEncoder       passwordEncoder;
-    private final JwtTokenProvider      jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final UserMapper            userMapper;
+    private final RedisTemplate<String,Object> redisTemplate;
+    private final UserMapper userMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Value("${sipora.jwt.access-token-expiry-ms}")
     private long accessTokenExpiryMs;
@@ -74,6 +77,9 @@ public class AuthService {
                 .build();
 
         user = userRepository.save(user);
+
+        eventPublisher.publishEvent(new UserRegisteredEvent(
+                user.getId(), user.getFullName(), user.getEmail()));
         log.info("New user registered: {}", user.getId());
 
         return issueTokenPair(user);

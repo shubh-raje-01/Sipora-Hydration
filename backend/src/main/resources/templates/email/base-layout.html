@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:th-fragment="http://www.thymeleaf.org">
+<!--
+  Base email layout fragment.
+  All templates include this via th:replace="email/base-layout :: layout(~{::content})"
+  This provides the shared header (Sipora logo + nav) and footer (links + unsubscribe).
+-->
+<body>
+<div th:fragment="layout(content)">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"
+       style="background-color:#F5F7FA; padding: 32px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <tr>
+    <td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" border="0"
+             style="max-width:600px; width:100%; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+
+        <!-- Header -->
+        <tr>
+          <td style="background: linear-gradient(135deg, #0D6EFD 0%, #0A58CA 100%); padding: 28px 40px; text-align:center;">
+            <a th:href="${brandUrl}" style="text-decoration:none;">
+              <span style="font-size:28px; font-weight:700; color:#ffffff; letter-spacing:-0.5px;">
+                💧 Sipora
+              </span>
+            </a>
+            <p style="color:rgba(255,255,255,0.85); font-size:13px; margin:6px 0 0;">
+              Premium Hydration — Powered by Scent
+            </p>
+          </td>
+        </tr>
+
+        <!-- Dynamic content injected here -->
+        <tr>
+          <td style="padding: 36px 40px;">
+            <th:block th:replace="${content}" />
+          </td>
+        </tr>
+
+        <!-- Divider -->
+        <tr>
+          <td style="padding: 0 40px;">
+            <hr style="border:none; border-top:1px solid #E9ECEF; margin:0;" />
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="padding: 24px 40px; text-align:center;">
+            <p style="font-size:12px; color:#6C757D; margin:0 0 8px;">
+              Questions? Email us at
+              <a th:href="'mailto:' + ${supportEmail}"
+                 th:text="${supportEmail}"
+                 style="color:#0D6EFD; text-decoration:none;"></a>
+            </p>
+            <p style="font-size:12px; color:#6C757D; margin:0 0 8px;">
+              <a th:href="${brandUrl + '/privacy'}" style="color:#6C757D;">Privacy Policy</a>
+              &nbsp;·&nbsp;
+              <a th:href="${brandUrl + '/terms'}" style="color:#6C757D;">Terms of Service</a>
+              &nbsp;·&nbsp;
+              <a th:href="${brandUrl + '/unsubscribe'}" style="color:#6C757D;">Unsubscribe</a>
+            </p>
+            <p style="font-size:11px; color:#ADB5BD; margin:0;">
+              © <span th:text="${year}">2025</span>
+              <span th:text="${brandName}">Sipora</span> — All rights reserved.
+              <br/>
+              123, Connaught Place, New Delhi, India - 110001
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+/* ══════════════════════════════════════════════════════════════════
+   SIPORA — GLOBAL STYLES
+   Design token CSS variables + base resets + typography defaults
+   ══════════════════════════════════════════════════════════════════ */
+
+@layer base {
+  /* ── Google Fonts import ───────────────────────────────────────── */
+  @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap");
+
+  /* ── CSS custom properties (used outside Tailwind where needed) ─ */
+  :root {
+    --color-brand:        #0F282F;
+    --color-brand-soft:   #A3E4FA;
+    --color-accent:       #FFA8C5;
+    --color-surface:      #F3F6F6;
+    --color-surface-card: #FFFFFF;
+    --color-text:         #0F282F;
+    --color-text-muted:   #4A6B72;
+    --color-border:       #D4E8EB;
+
+    --radius-sm:  0.375rem;
+    --radius-md:  0.75rem;
+    --radius-lg:  1rem;
+    --radius-xl:  1.5rem;
+    --radius-2xl: 2rem;
+
+    --shadow-card: 0 1px 4px rgba(15,40,47,0.06), 0 4px 16px rgba(15,40,47,0.06);
+    --shadow-soft: 0 4px 16px rgba(15,40,47,0.08);
+
+    --transition-fast:   150ms ease;
+    --transition-base:   250ms ease;
+    --transition-slow:   400ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  /* ── Base resets ─────────────────────────────────────────────── */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing:  antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior:         smooth;
+    text-rendering:          optimizeLegibility;
+  }
+
+  body {
+    @apply bg-ice-chip text-black-box font-sans;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* ── Headings ────────────────────────────────────────────────── */
+  h1, h2, h3 {
+    @apply font-serif font-semibold leading-tight tracking-tight;
+  }
+
+  h4, h5, h6 {
+    @apply font-sans font-semibold leading-snug;
+  }
+
+  /* ── Links ───────────────────────────────────────────────────── */
+  a {
+    @apply transition-colors duration-250;
+  }
+
+  /* ── Focus visible — accessibility ──────────────────────────── */
+  :focus-visible {
+    outline: 2px solid #90D6F9;
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ── Scrollbar — thin, branded ───────────────────────────────── */
+  ::-webkit-scrollbar       { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #F3F6F6; }
+  ::-webkit-scrollbar-thumb {
+    background: #A3E4FA;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #90D6F9; }
+
+  /* ── Selection color ─────────────────────────────────────────── */
+  ::selection {
+    background: #FFBCD9;
+    color: #0F282F;
+  }
+
+  /* ── Inputs base ─────────────────────────────────────────────── */
+  input, textarea, select {
+    @apply font-sans;
+  }
+
+  /* ── Images ──────────────────────────────────────────────────── */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   COMPONENT UTILITIES
+   Reusable patterns applied via @apply or className
+   ══════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* ── Container ───────────────────────────────────────────────── */
+  .container-sipora {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-2xl bg-black-box px-6 py-3
+           text-sm font-semibold text-white
+           shadow-soft transition-all duration-250
+           hover:bg-[#1a3d47] hover:shadow-soft-lg hover:-translate-y-0.5
+           active:translate-y-0 active:shadow-soft
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-2xl bg-pink-ciclet px-6 py-3
+           text-sm font-semibold text-black-box
+           shadow-pink transition-all duration-250
+           hover:bg-cotton-candy hover:shadow-soft-lg hover:-translate-y-0.5
+           active:translate-y-0
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-2xl border-2 border-black-box px-6 py-3
+           text-sm font-semibold text-black-box
+           bg-transparent transition-all duration-250
+           hover:bg-black-box hover:text-white hover:-translate-y-0.5
+           active:translate-y-0
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-2xl px-4 py-2
+           text-sm font-medium text-text-muted
+           transition-all duration-250
+           hover:bg-surface-muted hover:text-black-box;
+  }
+
+  /* ── Cards ───────────────────────────────────────────────────── */
+  .card {
+    @apply bg-white rounded-2xl border border-border shadow-card;
+  }
+
+  .card-hover {
+    @apply card transition-all duration-350
+           hover:shadow-soft-lg hover:-translate-y-1 hover:border-border-strong;
+  }
+
+  /* ── Input field ─────────────────────────────────────────────── */
+  .input-field {
+    @apply w-full rounded-xl border border-border bg-white px-4 py-3
+           text-sm text-black-box placeholder-text-light
+           transition-all duration-250
+           focus:outline-none focus:border-marshmallow focus:ring-2 focus:ring-marshmallow/20;
+  }
+
+  .input-label {
+    @apply block text-sm font-medium text-black-box mb-1.5;
+  }
+
+  /* ── Skeleton loading ────────────────────────────────────────── */
+  .skeleton {
+    @apply rounded-lg bg-gradient-to-r from-surface-muted via-[#EBF2F3] to-surface-muted
+           bg-[length:200%_100%] animate-shimmer;
+  }
+
+  /* ── Section headings ────────────────────────────────────────── */
+  .section-tag {
+    @apply inline-block rounded-full bg-celestial/30 px-3 py-1
+           text-2xs font-semibold uppercase tracking-widest text-black-box;
+  }
+
+  .section-title {
+    @apply font-serif text-3xl font-semibold text-black-box md:text-4xl;
+  }
+
+  .section-subtitle {
+    @apply text-base text-text-muted leading-relaxed;
+  }
+
+  /* ── Badge ───────────────────────────────────────────────────── */
+  .badge-new {
+    @apply inline-block rounded-full bg-cotton-candy px-2.5 py-0.5
+           text-2xs font-semibold uppercase tracking-wide text-black-box;
+  }
+
+  .badge-instock {
+    @apply inline-block rounded-full bg-celestial/40 px-2.5 py-0.5
+           text-2xs font-semibold text-black-box;
+  }
+
+  .badge-outstock {
+    @apply inline-block rounded-full bg-gray-100 px-2.5 py-0.5
+           text-2xs font-semibold text-text-light;
+  }
+
+  /* ── Page hero gradient text ─────────────────────────────────── */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #A3E4FA 0%, #FFBCD9 100%);
+  }
+
+  /* ── Divider ─────────────────────────────────────────────────── */
+  .divider {
+    @apply border-t border-border my-8;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PAGE TRANSITIONS (Framer Motion resets)
+   ══════════════════════════════════════════════════════════════════ */
+.page-enter {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 350ms ease, transform 350ms ease;
+}

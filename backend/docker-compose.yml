@@ -1,0 +1,204 @@
+# ═══════════════════════════════════════════════════════════════════════
+# Sipora Hydration — Local Development Environment
+# ═══════════════════════════════════════════════════════════════════════
+#
+# Services:
+#   postgres  — PostgreSQL 16 (primary datastore, port 5432)
+#   redis     — Redis 7 (cache + JWT tokens + AI sessions, port 6379)
+#   mailhog   — MailHog SMTP trap (catches all emails, port 1025/8025)
+#   app       — Spring Boot backend (port 8080)
+#
+# Quick start:
+#   cp .env.example .env          # fill in secrets
+#   docker compose up -d          # start all services
+#   docker compose up app         # start just the app (DB must be up)
+#   docker compose logs -f app    # tail logs
+#   docker compose down -v        # stop and wipe volumes
+#
+# Without the app service (run Spring Boot from IntelliJ instead):
+#   docker compose up -d postgres redis mailhog
+#   then run SiporaApplication from your IDE with profile=dev
+#
+# View emails:
+#   Open http://localhost:8025 in your browser (MailHog web UI)
+#
+# Connect to PostgreSQL:
+#   psql -h localhost -U sipora -d sipora
+# ═══════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ─────────────────────────────────────────────────────────────────────
+  # PostgreSQL 16
+  # ─────────────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: sipora-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-sipora}
+      POSTGRES_USER:     ${POSTGRES_USER:-sipora}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sipora}
+      # PostgreSQL tuning for local dev (small machine)
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Optional: drop a .sql file here to seed data beyond Flyway migrations
+      # - ./scripts/seed.sql:/docker-entrypoint-initdb.d/99_seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sipora} -d ${POSTGRES_DB:-sipora}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - sipora-net
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Redis 7
+  # ─────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: sipora-redis
+    restart: unless-stopped
+    # Enable AOF persistence — survives container restarts in dev
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - sipora-net
+
+  # ─────────────────────────────────────────────────────────────────────
+  # MailHog — catches all outgoing email in dev
+  #
+  # SMTP:  localhost:1025  (configure in application-dev.yml)
+  # Web UI: http://localhost:8025
+  #
+  # No emails reach real addresses. Perfect for testing order confirmation,
+  # welcome emails, cancellation notices without spamming anyone.
+  # ─────────────────────────────────────────────────────────────────────
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: sipora-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    networks:
+      - sipora-net
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Spring Boot Application
+  #
+  # NOTE: In active development, run the app from IntelliJ/VS Code instead
+  # of using this service — it gives you hot reload, debugger, and faster
+  # iteration. Use this service only for full integration testing or when
+  # you want to test the Docker build itself.
+  #
+  # To build the image: docker compose build app
+  # To run only infra:  docker compose up -d postgres redis mailhog
+  # ─────────────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sipora-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring profile
+      SPRING_PROFILES_ACTIVE: dev
+
+      # Database
+      DB_URL:      jdbc:postgresql://postgres:5432/${POSTGRES_DB:-sipora}
+      DB_USERNAME: ${POSTGRES_USER:-sipora}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-sipora}
+
+      # Redis
+      REDIS_HOST:     redis
+      REDIS_PORT:     6379
+      REDIS_PASSWORD: ""
+
+      # Mail — points to MailHog inside Docker network
+      MAIL_HOST:     mailhog
+      MAIL_PORT:     1025
+      MAIL_USERNAME: dev
+      MAIL_PASSWORD: dev
+
+      # JWT (dev secret — NEVER use in production)
+      JWT_SECRET: dev-secret-at-least-256-bits-long-do-not-use-in-prod-ever
+
+      # CORS
+      CORS_ORIGIN_1: http://localhost:5173
+      CORS_ORIGIN_2: http://localhost:3000
+
+      # Payment (use Razorpay test keys from dashboard)
+      RAZORPAY_KEY_ID:        ${RAZORPAY_KEY_ID:-rzp_test_placeholder}
+      RAZORPAY_KEY_SECRET:    ${RAZORPAY_KEY_SECRET:-placeholder}
+      RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-placeholder}
+
+      # Gemini AI (Google Cloud project)
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID:-your-gcp-project-id}
+      GCP_LOCATION:   ${GCP_LOCATION:-us-central1}
+
+      # Cloudinary (image CDN)
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-placeholder}
+      CLOUDINARY_API_KEY:    ${CLOUDINARY_API_KEY:-placeholder}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-placeholder}
+
+      # JVM tuning — reasonable defaults for a dev container
+      JAVA_OPTS: >-
+        -Xms256m
+        -Xmx512m
+        -XX:+UseG1GC
+        -XX:+UseContainerSupport
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s   # allow time for Flyway migrations on first start
+    networks:
+      - sipora-net
+
+# ═══════════════════════════════════════════════════════════════════════
+# VOLUMES
+# Named volumes persist data across container restarts.
+# Run `docker compose down -v` to wipe them completely (fresh DB).
+# ═══════════════════════════════════════════════════════════════════════
+volumes:
+  postgres_data:
+    name: sipora-postgres-data
+  redis_data:
+    name: sipora-redis-data
+
+# ═══════════════════════════════════════════════════════════════════════
+# NETWORKS
+# ═══════════════════════════════════════════════════════════════════════
+networks:
+  sipora-net:
+    name: sipora-network
+    driver: bridge
